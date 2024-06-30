@@ -88,7 +88,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="orbit-wrapper" :class="{ 'opacity-0': props.fadeOut }" :style="orbitDimension">
+  <div class="orbit-wrapper" :class="{ hide: props.fadeOut }" :style="orbitDimension">
     <div ref="orbit" class="orbit">
       <slot />
     </div>
@@ -124,7 +124,9 @@ onMounted(() => {
   transition: all 0.5s ease-in;
 }
 
-.opacity-0 {
+.hide {
   opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 </style>

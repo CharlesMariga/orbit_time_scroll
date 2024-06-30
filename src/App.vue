@@ -10,9 +10,8 @@ const gapBetweenEllipsis = 116;
 const maxOrbitsOnscreen = 7;
 const orbitCount = ref(maxOrbitsOnscreen);
 const dimensions = ref<number[]>([]);
-
-// TODO:
-const colors = ['red', 'green', 'blue'];
+const timeOut = ref();
+const scrollY = ref(0);
 
 const contactsData = ref<WeekData>([]);
 
@@ -48,7 +47,6 @@ function fadeOrbitOut(dimension: number) {
 }
 
 function add() {
-  console.log('Add should be running');
   if (orbitCount.value != contactsData.value.length) {
     orbitCount.value += 1;
 
@@ -69,6 +67,22 @@ function subtract() {
     }
   }
 }
+
+window.addEventListener('wheel', (e) => {
+  clearTimeout(timeOut.value);
+
+  timeOut.value = setTimeout(() => {
+    if (e.deltaY > 0 && scrollY.value <= 120 * contactsData.value.length - maxOrbitsOnscreen) {
+      // Downward scroll
+      scrollY.value += 120;
+      add();
+    } else if (e.deltaY < 0 && scrollY.value !== 0) {
+      // Upward scroll
+      scrollY.value -= 120;
+      subtract();
+    }
+  }, 100);
+});
 
 document.addEventListener('keydown', function (event) {
   switch (event.key) {
@@ -91,24 +105,14 @@ document.addEventListener('keydown', function (event) {
       :contacts-count="contactsData[i]?.array.length || 0"
       :fade-out="fadeOrbitOut(dimensions[i])"
     >
-      <ContactCard v-for="contact in contactsData[i]?.array" :key="contact.id" :details="contact" />
+      <ContactCard
+        v-for="contact in contactsData[i]?.array"
+        :key="contact.id"
+        :details="contact"
+        :dimensions="dimensions[i]"
+      />
     </Orbit>
     <OrbiterLogo />
-    <Teleport to="body">
-      <div class="buttons">
-        <button @click="add">Add +</button>
-        <button @click="subtract">Subtract -</button>
-      </div>
-      <!-- <div
-        v-for="i in contactsData.length - maxOrbitsOnscreen + 1"
-        :style="{ backgroundColor: colors[i - 1] }"
-        class="scroll-snap"
-        :key="i"
-      >
-        &nbsp;
-        <h1>{{ i }}</h1>
-      </div> -->
-    </Teleport>
   </div>
 </template>
 

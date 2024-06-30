@@ -69,6 +69,10 @@ function mouseHoveredOff() {
   cardIsHoveredOn.value = false;
   hideContactDetails();
 }
+
+window.addEventListener('wheel', () => {
+  mouseHoveredOff();
+});
 </script>
 
 <template>
