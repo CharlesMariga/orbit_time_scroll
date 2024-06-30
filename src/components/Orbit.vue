@@ -4,6 +4,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 interface OrbitProps {
   dimensions: number;
   contactsCount?: number;
+  fadeOut?: boolean;
 }
 
 const props = defineProps<OrbitProps>();
@@ -28,6 +29,13 @@ watch(
     orderContactsOnOrbit();
   },
   { immediate: true, deep: true }
+);
+
+watch(
+  () => props.dimensions,
+  () => {
+    orderContactsOnOrbit();
+  }
 );
 
 function orderContactsOnOrbit() {
@@ -80,7 +88,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="orbit-wrapper" :style="orbitDimension">
+  <div class="orbit-wrapper" :class="{ 'opacity-0': props.fadeOut }" :style="orbitDimension">
     <div ref="orbit" class="orbit">
       <slot />
     </div>
@@ -97,6 +105,7 @@ onMounted(() => {
   border: 1px solid;
   background-image: linear-gradient(180deg, #ffffff -6.6%, rgba(255, 255, 255, 0) 46.31%);
   padding: 1px;
+  transition: all 0.5s ease-in;
 }
 
 .orbit {
@@ -112,5 +121,10 @@ onMounted(() => {
 
 .orbit > * {
   position: absolute;
+  transition: all 0.5s ease-in;
+}
+
+.opacity-0 {
+  opacity: 0;
 }
 </style>

@@ -163,10 +163,6 @@ function mouseHoveredOff() {
 </template>
 
 <style lang="css" scoped>
-.contact:hover {
-  z-index: 500;
-}
-
 .contact:hover .contact-card {
   display: block;
 }
@@ -177,6 +173,7 @@ function mouseHoveredOff() {
   background-image: linear-gradient(180deg, #b5b5b5 0%, #2c2c2c 100%);
   border-radius: 8px;
   transform-origin: top left;
+  z-index: 500;
 }
 
 .contact-card__bg {
