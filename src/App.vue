@@ -29,10 +29,10 @@ watch(
 
 async function fetchData() {
   const res = await fetch(
-    'https://xsrr-l2ye-dpbj.f2.xano.io/api:oUvfVMO5/receive_week?start_date=2024-1-8'
+    `https://xsrr-l2ye-dpbj.f2.xano.io/api:oUvfVMO5/receive_week?start_date=${getFormattedDate()}`
   );
   const data = await res.json();
-  contactsData.value = data?.reverse();
+  contactsData.value = data;
 }
 fetchData();
 
@@ -68,6 +68,19 @@ function subtract() {
   }
 }
 
+function getFormattedDate() {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1; // Months are zero-based, so we add 1
+  const day = date.getDate();
+
+  return `${year}-${month}-${day}`;
+}
+
+function isOuterOrbit(dimension: number) {
+  return dimension === smallestEllipseDimension + 6 * 2 * gapBetweenEllipsis;
+}
+
 window.addEventListener('wheel', (e) => {
   clearTimeout(timeOut.value);
 
@@ -101,9 +114,11 @@ document.addEventListener('keydown', function (event) {
     <Orbit
       v-for="(contact, i) in contactsToDisplay"
       :key="contact.contact_date"
+      :isOuterOrbit="isOuterOrbit(dimensions[i])"
       :dimensions="dimensions[i]"
       :contacts-count="contactsData[i]?.array.length || 0"
       :fade-out="fadeOrbitOut(dimensions[i])"
+      :date="contactsData[i].contact_date"
     >
       <ContactCard
         v-for="contact in contactsData[i]?.array"

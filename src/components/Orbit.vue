@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import { formatDateString } from '@/lib/utilts';
 import { computed, onMounted, ref, watch } from 'vue';
 
 interface OrbitProps {
   dimensions: number;
   contactsCount?: number;
   fadeOut?: boolean;
+  isOuterOrbit: boolean;
+  date: string;
 }
 
 const props = defineProps<OrbitProps>();
@@ -43,7 +46,7 @@ function orderContactsOnOrbit() {
   const orbitRadius = props.dimensions / 2;
 
   if (avatars?.length) {
-    if (avatars.length === 1) {
+    if (avatars.length === 1 && !props.isOuterOrbit) {
       (avatars[0] as HTMLDivElement).style.transform =
         `rotate(0deg) translate(${orbitRadius}px) rotate(-0deg)`;
       return;
@@ -59,7 +62,7 @@ function orderContactsOnOrbit() {
     let leftAvatars = avatarsArr.slice(0, leftCount);
     let rightAvatars = avatarsArr.slice(leftCount);
 
-    if (isAvatarsCountOdd) {
+    if (isAvatarsCountOdd && !props.isOuterOrbit) {
       rightAvatars = avatarsArr.slice(leftCount + 1);
       (avatars[leftCount] as HTMLDListElement).style.transform =
         `rotate(0deg) translate(${orbitRadius}px) rotate(-0deg)`;
@@ -73,6 +76,7 @@ function orderContactsOnOrbit() {
         `rotate(${angle}deg) translate(${orbitRadius}px) rotate(-${angle}deg)`;
     });
 
+    // 3) Loop throught the right array
     angle = isAvatarsCountOdd ? angleInterval : angleInterval / 2;
     rightAvatars.forEach((el, index) => {
       if (index > 0) angle += angleInterval;
@@ -89,6 +93,9 @@ onMounted(() => {
 
 <template>
   <div class="orbit-wrapper" :class="{ hide: props.fadeOut }" :style="orbitDimension">
+    <div v-if="props.isOuterOrbit" class="orbit-date-container">
+      <div class="orbit-date">{{ formatDateString(props.date) }}</div>
+    </div>
     <div ref="orbit" class="orbit">
       <slot />
     </div>
@@ -128,5 +135,22 @@ onMounted(() => {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
+}
+
+.orbit-date-container {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 200;
+}
+
+.orbit-date {
+  color: white;
+  z-index: 10;
+  background: var(--Colors-Black-100);
+  padding: 0 4px;
+  font-size: 16px;
+  color: rgba(146, 146, 146, 1);
 }
 </style>
