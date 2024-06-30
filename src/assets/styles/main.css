@@ -1,0 +1,30 @@
+:root {
+  --Colors-Black-100: #0a0a0a;
+  --Colors-Black-tansparent-65: rgba(10, 10, 10, 0.65);
+  --Colors-Black-tansparent-85: rgba(10, 10, 10, 0.85);
+  --Syntax-Transparent-background: rgba(255, 255, 255, 0.05);
+  --Colors-White-transparent-5: rgba(255, 255, 255, 0.05);
+}
+
+*,
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background-color: var(--Colors-Black-100);
+  height: 100dvh;
+  width: 100vw;
+  min-height: 200vh;
+  overflow-x: hidden;
+}
+
+#app {
+  width: 100%;
+  height: 100dvh;
+  position: fixed;
+}

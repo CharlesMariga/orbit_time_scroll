@@ -1,47 +1,52 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import { ref } from 'vue';
+import Orbit from './components/Orbit.vue';
+import OrbiterLogo from './components/OrbiterLogo.vue';
+import type { WeekData } from './types/contacts';
+import ContactCard from './components/ContactCard.vue';
+
+// https://xsrr-l2ye-dpbj.f2.xano.io/api:oUvfVMO5/receive_week?start_date=2024-1-8
+
+const smallestEllipseDimension = 400;
+const gapBetweenEllipsis = 116;
+const orbitCount = 7;
+
+const contactsData = ref<WeekData>([]);
+
+const orbitsDimensions = Array.from(
+  { length: orbitCount },
+  (_, i) => smallestEllipseDimension + i * 2 * gapBetweenEllipsis
+).reverse();
+
+async function fetchData() {
+  const res = await fetch(
+    'https://xsrr-l2ye-dpbj.f2.xano.io/api:oUvfVMO5/receive_week?start_date=2024-1-8'
+  );
+  const data = await res.json();
+  contactsData.value = data?.reverse();
+}
+
+fetchData();
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  <div v-if="contactsData.length" class="container">
+    <Orbit
+      v-for="(dimension, i) in orbitsDimensions"
+      :key="dimension"
+      :dimensions="dimension"
+      :contacts-count="contactsData[i]?.array.length || 0"
+    >
+      <ContactCard v-for="contact in contactsData[i]?.array" :key="contact.id" :details="contact" />
+    </Orbit>
+    <OrbiterLogo />
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+<style>
+.container {
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
 </style>
