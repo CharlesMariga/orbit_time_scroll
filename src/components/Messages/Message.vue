@@ -1,4 +1,12 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import type { LastMessage } from '@/types/contacts';
+
+interface MessageProps {
+  lastMessage: LastMessage;
+}
+
+const props = defineProps<MessageProps>();
+</script>
 
 <template>
   <div class="message">
@@ -27,8 +35,8 @@
         <span class="message__duration">2 days ago</span>
       </div>
       <div>
-        <h3 class="message__heading">Collaboration Opportunity for Prodct Expansion</h3>
-        <p class="message__text">I hope this message finds you well. I wanted to reach out to...</p>
+        <h3 class="message__heading">{{ props.lastMessage.message_head }}</h3>
+        <p class="message__text">{{ props.lastMessage.message }}</p>
       </div>
       <button class="messaeg__more-btn">
         <span>More</span>
@@ -104,6 +112,11 @@
   color: white;
   font-weight: 300;
   margin-top: 5px;
+  width: 462px;
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .messaeg__more-btn {

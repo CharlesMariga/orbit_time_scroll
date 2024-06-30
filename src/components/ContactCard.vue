@@ -37,6 +37,19 @@ function showContactDetails() {
 
   topPosition.value = contactCard.value?.getBoundingClientRect().top || 0;
   leftPosition.value = contactCard.value?.getBoundingClientRect().left || 0;
+
+  const distanceFromRight = window.innerWidth - leftPosition.value;
+  const distanceFromBottom = window.innerHeight - topPosition.value;
+
+  // Check if the width is greater than the distanceFromRight
+  if (distanceFromRight < 580) {
+    leftPosition.value = window.innerWidth - 580;
+  }
+
+  // Check if the height is greater than the distanceFromBottom
+  if (distanceFromBottom < 350) {
+    topPosition.value = window.innerHeight - 350;
+  }
 }
 
 function hideContactDetails() {
@@ -69,7 +82,7 @@ function mouseHoveredOff() {
     <Avatar :src="props.details.img" :alt="props.details.name" />
 
     <!-- Content shown on hover -->
-    <Teleport to="body">
+    <Teleport to="#app">
       <Transition name="fade">
         <div
           v-if="showDetails"
@@ -138,7 +151,7 @@ function mouseHoveredOff() {
               <!-- Messages -->
               <Transition name="fade">
                 <Messages v-if="showMessages">
-                  <Message />
+                  <Message :last-message="props.details._orbits_last_message" />
                 </Messages>
               </Transition>
             </div>
@@ -189,7 +202,7 @@ function mouseHoveredOff() {
 }
 
 .contact-card__content {
-  border-radius: 8px;
+  border-radius: 8px 8px 0px 0px;
   padding: 10px;
   position: static;
   background-color: var(--Colors-Black-100);
