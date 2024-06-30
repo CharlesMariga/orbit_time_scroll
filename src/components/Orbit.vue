@@ -18,6 +18,8 @@ const orbitDimension = computed(() => ({
   height: `${props.dimensions}px`
 }));
 
+const orbitChildrenLength = computed(() => orbit.value?.children.length || 0);
+
 watch(
   () => props.contactsCount,
   () => {
@@ -93,9 +95,11 @@ onMounted(() => {
 
 <template>
   <div class="orbit-wrapper" :class="{ hide: props.fadeOut }" :style="orbitDimension">
-    <div v-if="props.isOuterOrbit" class="orbit-date-container">
-      <div class="orbit-date">{{ formatDateString(props.date) }}</div>
-    </div>
+    <Transition name="fade">
+      <div v-if="props.isOuterOrbit && orbitChildrenLength <= 20" class="orbit-date-container">
+        <div class="orbit-date">{{ formatDateString(props.date) }}</div>
+      </div>
+    </Transition>
     <div ref="orbit" class="orbit">
       <slot />
     </div>
