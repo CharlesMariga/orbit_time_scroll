@@ -1,11 +1,20 @@
 <script setup lang="ts">
+import { formatLongDateString, timeAgo } from '@/lib/utilts';
 import type { LastMessage } from '@/types/contacts';
+import { ref } from 'vue';
 
 interface MessageProps {
   lastMessage: LastMessage;
+  date: string;
 }
 
 const props = defineProps<MessageProps>();
+
+const showFullMessage = ref(false);
+
+function toggleMessage() {
+  showFullMessage.value ? (showFullMessage.value = false) : (showFullMessage.value = true);
+}
 </script>
 
 <template>
@@ -31,16 +40,22 @@ const props = defineProps<MessageProps>();
     </div>
     <div class="message__content">
       <div class="message__date">
-        <time class="message__time">Saturday, November 4 2023 at 9:04 AM EST</time>
-        <span class="message__duration">2 days ago</span>
+        <time class="message__time">{{ formatLongDateString(props.date) }}</time>
+        <span class="message__duration">{{ timeAgo(props.date) }}</span>
       </div>
       <div>
         <h3 class="message__heading">{{ props.lastMessage.message_head }}</h3>
-        <p class="message__text">{{ props.lastMessage.message }}</p>
+        <p class="message__text" :class="{ 'hide-text': !showFullMessage }">
+          {{ props.lastMessage.message }}
+        </p>
       </div>
-      <button class="messaeg__more-btn">
-        <span>More</span>
+      <button class="messaeg__more-btn" @click="toggleMessage">
+        <span>{{ showFullMessage ? 'Less' : 'More' }}</span>
         <svg
+          :style="{
+            transform: `rotate(${showFullMessage ? '180' : '0'}deg)`,
+            transition: 'all .25s ease-in'
+          }"
           width="24"
           height="24"
           viewBox="0 0 24 24"
@@ -113,6 +128,9 @@ const props = defineProps<MessageProps>();
   font-weight: 300;
   margin-top: 5px;
   width: 462px;
+}
+
+.hide-text {
   text-overflow: ellipsis;
   text-wrap: nowrap;
   overflow: hidden;
@@ -129,5 +147,9 @@ const props = defineProps<MessageProps>();
   font-size: 16px;
   font-weight: 300;
   cursor: pointer;
+}
+
+.rotate-180 {
+  transform: rotate(180deb);
 }
 </style>

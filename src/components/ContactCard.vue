@@ -12,6 +12,7 @@ import Message from './Messages/Message.vue';
 
 interface ContactCardDetailsProps {
   details: Contact;
+  date: string;
 }
 
 const props = defineProps<ContactCardDetailsProps>();
@@ -47,8 +48,8 @@ function showContactDetails() {
   }
 
   // Check if the height is greater than the distanceFromBottom
-  if (distanceFromBottom < 350) {
-    topPosition.value = window.innerHeight - 350;
+  if (distanceFromBottom < 370) {
+    topPosition.value = window.innerHeight - 370;
   }
 }
 
@@ -155,7 +156,7 @@ window.addEventListener('wheel', () => {
               <!-- Messages -->
               <Transition name="fade">
                 <Messages v-if="showMessages">
-                  <Message :last-message="props.details._orbits_last_message" />
+                  <Message :last-message="props.details._orbits_last_message" :date="props.date" />
                 </Messages>
               </Transition>
             </div>

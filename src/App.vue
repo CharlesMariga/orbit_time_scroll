@@ -5,8 +5,6 @@ import OrbiterLogo from './components/OrbiterLogo.vue';
 import type { WeekData } from './types/contacts';
 import ContactCard from './components/ContactCard.vue';
 
-const smallestEllipseDimension = 400;
-const gapBetweenEllipsis = 116;
 const maxOrbitsOnscreen = 7;
 const orbitCount = ref(maxOrbitsOnscreen);
 const dimensions = ref<number[]>([]);
@@ -27,6 +25,14 @@ watch(
   }
 );
 
+const gapBetweenEllipsis = computed(() => {
+  const margin = 60;
+  const halfScreenWidth = (window.innerWidth - margin * 2) / 2;
+  return Math.floor(halfScreenWidth / maxOrbitsOnscreen);
+});
+
+const smallestEllipseDimension = computed(() => gapBetweenEllipsis.value * 2);
+
 async function fetchData() {
   const res = await fetch(
     `https://xsrr-l2ye-dpbj.f2.xano.io/api:oUvfVMO5/receive_week?start_date=${getFormattedDate()}`
@@ -38,12 +44,13 @@ fetchData();
 
 function calculateDimension(value: number) {
   return (
-    smallestEllipseDimension + (contactsToDisplay.value.length - value - 1) * 2 * gapBetweenEllipsis
+    smallestEllipseDimension.value +
+    (contactsToDisplay.value.length - value - 1) * 2 * gapBetweenEllipsis.value
   );
 }
 
 function fadeOrbitOut(dimension: number) {
-  return dimension > smallestEllipseDimension + 6 * 2 * gapBetweenEllipsis;
+  return dimension > smallestEllipseDimension.value + 6 * 2 * gapBetweenEllipsis.value;
 }
 
 function add() {
@@ -51,8 +58,8 @@ function add() {
     orbitCount.value += 1;
 
     for (let i = 0; i < orbitCount.value; i++) {
-      if (dimensions.value[i] === 0) dimensions.value[i] = smallestEllipseDimension;
-      else dimensions.value[i] += gapBetweenEllipsis * 2;
+      if (dimensions.value[i] === 0) dimensions.value[i] = smallestEllipseDimension.value;
+      else dimensions.value[i] += gapBetweenEllipsis.value * 2;
     }
   }
 }
@@ -63,7 +70,7 @@ function subtract() {
 
     for (let i = 0; i <= orbitCount.value; i++) {
       if (i === orbitCount.value) dimensions.value[i] = 0;
-      else dimensions.value[i] -= gapBetweenEllipsis * 2;
+      else dimensions.value[i] -= gapBetweenEllipsis.value * 2;
     }
   }
 }
@@ -78,7 +85,7 @@ function getFormattedDate() {
 }
 
 function isOuterOrbit(dimension: number) {
-  return dimension === smallestEllipseDimension + 6 * 2 * gapBetweenEllipsis;
+  return dimension === smallestEllipseDimension.value + 6 * 2 * gapBetweenEllipsis.value;
 }
 
 window.addEventListener('wheel', (e) => {
@@ -112,8 +119,8 @@ document.addEventListener('keydown', function (event) {
 <template>
   <div v-if="contactsData.length" class="container">
     <Orbit
-      v-for="(contact, i) in contactsToDisplay"
-      :key="contact.contact_date"
+      v-for="(contacts, i) in contactsToDisplay"
+      :key="contacts.contact_date"
       :isOuterOrbit="isOuterOrbit(dimensions[i])"
       :dimensions="dimensions[i]"
       :contacts-count="contactsData[i]?.array.length || 0"
@@ -125,6 +132,7 @@ document.addEventListener('keydown', function (event) {
         :key="contact.id"
         :details="contact"
         :dimensions="dimensions[i]"
+        :date="contacts.contact_date"
       />
     </Orbit>
     <OrbiterLogo />

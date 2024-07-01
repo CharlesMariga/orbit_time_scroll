@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { formatDateString } from '@/lib/utilts';
+import { formatShortDateString } from '@/lib/utilts';
 import { computed, onMounted, ref, watch } from 'vue';
 
 interface OrbitProps {
@@ -55,7 +55,11 @@ function orderContactsOnOrbit() {
     }
 
     const displayAngle = 160;
-    const angleInterval = displayAngle / avatars.length > 35 ? 35 : displayAngle / avatars.length;
+    let itemsOnOrbitCount = avatars.length;
+    if (props.isOuterOrbit) itemsOnOrbitCount += 2;
+
+    const angleInterval =
+      displayAngle / itemsOnOrbitCount > 35 ? 35 : displayAngle / itemsOnOrbitCount;
     const avatarsArr = Array.from(avatars);
     const isAvatarsCountOdd = avatars.length % 2 !== 0;
 
@@ -73,7 +77,8 @@ function orderContactsOnOrbit() {
     // 2) Loop throught the left array
     let angle = isAvatarsCountOdd ? 360 - angleInterval : 360 - angleInterval / 2;
     leftAvatars.reverse().forEach((el, index) => {
-      if (index > 0) angle -= angleInterval;
+      if (index === 0 && props.isOuterOrbit) angle -= angleInterval / 2;
+      else if (index > 0) angle -= angleInterval;
       (el as HTMLDivElement).style.transform =
         `rotate(${angle}deg) translate(${orbitRadius}px) rotate(-${angle}deg)`;
     });
@@ -81,7 +86,8 @@ function orderContactsOnOrbit() {
     // 3) Loop throught the right array
     angle = isAvatarsCountOdd ? angleInterval : angleInterval / 2;
     rightAvatars.forEach((el, index) => {
-      if (index > 0) angle += angleInterval;
+      if (index === 0 && props.isOuterOrbit) angle += angleInterval / 2;
+      else if (index > 0) angle += angleInterval;
       (el as HTMLDivElement).style.transform =
         `rotate(${angle}deg) translate(${orbitRadius}px) rotate(-${angle}deg)`;
     });
@@ -94,10 +100,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="orbit-wrapper" :class="{ hide: props.fadeOut }" :style="orbitDimension">
+  <div
+    v-if="props.dimensions"
+    class="orbit-wrapper"
+    :class="{ hide: props.fadeOut }"
+    :style="orbitDimension"
+  >
     <Transition name="fade">
       <div v-if="props.isOuterOrbit && orbitChildrenLength <= 20" class="orbit-date-container">
-        <div class="orbit-date">{{ formatDateString(props.date) }}</div>
+        <div class="orbit-date">{{ formatShortDateString(props.date) }}</div>
       </div>
     </Transition>
     <div ref="orbit" class="orbit">
