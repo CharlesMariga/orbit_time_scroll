@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, handleError, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import Orbit from './components/Orbit.vue';
 import OrbiterLogo from './components/OrbiterLogo.vue';
 import type { WeekData } from './types/contacts';
@@ -30,10 +30,6 @@ const gapBetweenEllipsis = computed(() => {
   let halfScreen: number;
 
   // Compare the radii on the x and y axis and use the least one
-  console.log(window.innerHeight);
-  console.log(window.innerWidth / 2);
-  console.log(window.innerHeight > window.innerWidth / 2);
-
   if (window.innerHeight > window.innerWidth / 2) {
     halfScreen = (window.innerWidth - margin * 2) / 2;
   } else {
@@ -50,7 +46,12 @@ async function fetchData() {
     `https://xsrr-l2ye-dpbj.f2.xano.io/api:oUvfVMO5/receive_week?start_date=${getFormattedDate()}`
   );
   const data = await res.json();
-  contactsData.value = data;
+  contactsData.value = (data as WeekData).map((el) => ({
+    array: el.array.filter(
+      (obj, index, self) => index === self.findIndex((el) => el.name === obj['name'])
+    ),
+    contact_date: el.contact_date
+  }));
 }
 fetchData();
 
