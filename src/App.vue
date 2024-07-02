@@ -30,6 +30,10 @@ const gapBetweenEllipsis = computed(() => {
   let halfScreen: number;
 
   // Compare the radii on the x and y axis and use the least one
+  consoe.log(window.innerHeight);
+  console.log(window.innerWidth / 2);
+  console.log(window.innerHeight > window.innerWidth / 2);
+
   if (window.innerHeight > window.innerWidth / 2) {
     halfScreen = (window.innerWidth - margin * 2) / 2;
   } else {
