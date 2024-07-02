@@ -42,16 +42,20 @@ const gapBetweenEllipsis = computed(() => {
 const smallestEllipseDimension = computed(() => gapBetweenEllipsis.value * 2);
 
 async function fetchData() {
-  const res = await fetch(
-    `https://xsrr-l2ye-dpbj.f2.xano.io/api:oUvfVMO5/receive_week?start_date=${getFormattedDate()}`
-  );
-  const data = await res.json();
-  contactsData.value = (data as WeekData).map((el) => ({
-    array: el.array.filter(
-      (obj, index, self) => index === self.findIndex((el) => el.name === obj['name'])
-    ),
-    contact_date: el.contact_date
-  }));
+  try {
+    const res = await fetch(
+      `https://xsrr-l2ye-dpbj.f2.xano.io/api:oUvfVMO5/receive_week?start_date=${getFormattedDate()}`
+    );
+    const data = await res.json();
+    contactsData.value = (data as WeekData).map((el) => ({
+      array: el.array.filter(
+        (obj, index, self) => index === self.findIndex((el) => el.name === obj['name'])
+      ),
+      contact_date: el.contact_date
+    }));
+  } catch (err) {
+    console.log('Error loading data');
+  }
 }
 fetchData();
 
