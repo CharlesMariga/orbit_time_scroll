@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, handleError, ref, watch } from 'vue';
 import Orbit from './components/Orbit.vue';
 import OrbiterLogo from './components/OrbiterLogo.vue';
 import type { WeekData } from './types/contacts';
@@ -27,8 +27,16 @@ watch(
 
 const gapBetweenEllipsis = computed(() => {
   const margin = 60;
-  const halfScreenWidth = (window.innerWidth - margin * 2) / 2;
-  return Math.floor(halfScreenWidth / maxOrbitsOnscreen);
+  let halfScreen: number;
+
+  // Compare the radii on the x and y axis and use the least one
+  if (window.innerHeight > window.innerWidth / 2) {
+    halfScreen = (window.innerWidth - margin * 2) / 2;
+  } else {
+    halfScreen = (window.innerHeight - margin) / 2;
+  }
+
+  return Math.floor(halfScreen / maxOrbitsOnscreen);
 });
 
 const smallestEllipseDimension = computed(() => gapBetweenEllipsis.value * 2);
