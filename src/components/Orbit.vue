@@ -100,12 +100,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div
-    v-if="props.dimensions"
-    class="orbit-wrapper"
-    :class="{ hide: props.fadeOut }"
-    :style="orbitDimension"
-  >
+  <div class="orbit-wrapper" :class="{ hide: props.fadeOut }" :style="orbitDimension">
     <Transition name="fade">
       <div v-if="props.isOuterOrbit && orbitChildrenLength <= 20" class="orbit-date-container">
         <div class="orbit-date">{{ formatShortDateString(props.date) }}</div>
@@ -127,7 +122,7 @@ onMounted(() => {
   border: 1px solid;
   background-image: linear-gradient(180deg, #ffffff -6.6%, rgba(255, 255, 255, 0) 46.31%);
   padding: 1px;
-  transition: all 0.5s ease-in;
+  transition: all 0.51s ease-in;
 }
 
 .orbit {

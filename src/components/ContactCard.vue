@@ -13,6 +13,7 @@ import Message from './Messages/Message.vue';
 interface ContactCardDetailsProps {
   details: Contact;
   date: string;
+  showCard: boolean;
 }
 
 const props = defineProps<ContactCardDetailsProps>();
@@ -80,6 +81,7 @@ window.addEventListener('wheel', () => {
   <div
     ref="contactCard"
     class="contact"
+    :class="{ hidden: !props.showCard }"
     @mouseover="showContactDetails"
     @mouseleave="hideContactDetails"
   >
@@ -286,5 +288,10 @@ window.addEventListener('wheel', () => {
   height: 100%;
   border-radius: 4px;
   object-fit: cover;
+}
+
+.hidden {
+  opacity: 0;
+  visibility: hidden;
 }
 </style>

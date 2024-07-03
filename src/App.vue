@@ -75,8 +75,8 @@ function add() {
     orbitCount.value += 1;
 
     for (let i = 0; i < orbitCount.value; i++) {
-      if (dimensions.value[i] === 0) dimensions.value[i] = smallestEllipseDimension.value;
-      else dimensions.value[i] += gapBetweenEllipsis.value * 2;
+      // if (dimensions.value[i] === 0) dimensions.value[i] = smallestEllipseDimension.value;
+      dimensions.value[i] += gapBetweenEllipsis.value * 2;
     }
   }
 }
@@ -86,8 +86,8 @@ function subtract() {
     orbitCount.value -= 1;
 
     for (let i = 0; i <= orbitCount.value; i++) {
-      if (i === orbitCount.value) dimensions.value[i] = 0;
-      else dimensions.value[i] -= gapBetweenEllipsis.value * 2;
+      // if (i === orbitCount.value) dimensions.value[i] = 0;
+      dimensions.value[i] -= gapBetweenEllipsis.value * 2;
     }
   }
 }
@@ -136,7 +136,7 @@ document.addEventListener('keydown', function (event) {
 <template>
   <div v-if="contactsData.length" class="container">
     <Orbit
-      v-for="(contacts, i) in contactsToDisplay"
+      v-for="(contacts, i) in contactsData"
       :key="contacts.contact_date"
       :isOuterOrbit="isOuterOrbit(dimensions[i])"
       :dimensions="dimensions[i]"
@@ -148,7 +148,7 @@ document.addEventListener('keydown', function (event) {
         v-for="contact in contactsData[i]?.array"
         :key="contact.id"
         :details="contact"
-        :dimensions="dimensions[i]"
+        :showCard="dimensions[i] > 0"
         :date="contacts.contact_date"
       />
     </Orbit>
