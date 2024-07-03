@@ -143,7 +143,7 @@ onMounted(() => {
 
 .orbit > * {
   position: absolute;
-  transition: all 0.5s ease-in 0.02s;
+  transition: all 0.5s ease-in 0.0215s;
   will-change: transform;
 }
 

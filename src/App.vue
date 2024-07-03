@@ -107,16 +107,17 @@ function isOuterOrbit(dimension: number) {
 
 window.addEventListener('wheel', (e) => {
   if (!timeOut.value) {
+    if (e.deltaY > 0 && scrollY.value <= 120 * contactsData.value.length - maxOrbitsOnscreen) {
+      // Downward scroll
+      scrollY.value += 120;
+      add();
+    } else if (e.deltaY < 0 && scrollY.value !== 0) {
+      // Upward scroll
+      scrollY.value -= 120;
+      subtract();
+    }
+
     timeOut.value = setTimeout(() => {
-      if (e.deltaY > 0 && scrollY.value <= 120 * contactsData.value.length - maxOrbitsOnscreen) {
-        // Downward scroll
-        scrollY.value += 120;
-        add();
-      } else if (e.deltaY < 0 && scrollY.value !== 0) {
-        // Upward scroll
-        scrollY.value -= 120;
-        subtract();
-      }
       clearTimeout(timeOut.value);
       timeOut.value = undefined;
     }, 500); // All animations take 0.5s
