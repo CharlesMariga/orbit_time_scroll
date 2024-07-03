@@ -34,7 +34,7 @@ const avatarDimension = computed(() => ({
 
 <style scoped>
 .avatar-container {
-  transition: all 1s ease-in-out;
+  transition: all 1s ease-in;
   cursor: pointer;
 }
 
