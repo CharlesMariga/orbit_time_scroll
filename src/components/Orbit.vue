@@ -105,7 +105,7 @@ onMounted(() => {
     :class="{ hide: props.fadeOut || props.dimensions === 0 }"
     :style="orbitDimension"
   >
-    <Transition name="fade">
+    <Transition name="fade-date">
       <div v-if="props.isOuterOrbit && orbitChildrenLength <= 20" class="orbit-date-container">
         <div class="orbit-date">{{ formatShortDateString(props.date) }}</div>
       </div>
@@ -168,5 +168,15 @@ onMounted(() => {
   padding: 0 4px;
   font-size: 16px;
   color: rgba(146, 146, 146, 1);
+}
+
+.fade-date-enter-active,
+.fade-date-leave-active {
+  transition: opacity 0.5s ease 0.3s;
+}
+
+.fade-date-enter-from,
+.fade-date-leave-to {
+  opacity: 0;
 }
 </style>
