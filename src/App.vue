@@ -29,7 +29,12 @@ const gapBetweenEllipsis = computed(() => {
   const margin = 60;
   let halfScreen: number;
 
-  halfScreen = (window.innerWidth - margin * 2) / 2;
+  // Compare the radii on the x and y axis and use the least one
+  if (window.innerHeight > window.innerWidth / 2) {
+    halfScreen = (window.innerWidth - margin * 2) / 2;
+  } else {
+    halfScreen = window.innerHeight - margin;
+  }
 
   return Math.floor(halfScreen / maxOrbitsOnscreen);
 });
