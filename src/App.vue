@@ -8,7 +8,7 @@ import ContactCard from './components/ContactCard.vue';
 const maxOrbitsOnscreen = 7;
 const orbitCount = ref(maxOrbitsOnscreen);
 const dimensions = ref<number[]>([]);
-const timeOut = ref();
+const timeOut = ref<number | undefined>(undefined);
 const scrollY = ref(0);
 
 const contactsData = ref<WeekData>([]);
@@ -106,19 +106,21 @@ function isOuterOrbit(dimension: number) {
 }
 
 window.addEventListener('wheel', (e) => {
-  clearTimeout(timeOut.value);
-
-  timeOut.value = setTimeout(() => {
-    if (e.deltaY > 0 && scrollY.value <= 120 * contactsData.value.length - maxOrbitsOnscreen) {
-      // Downward scroll
-      scrollY.value += 120;
-      add();
-    } else if (e.deltaY < 0 && scrollY.value !== 0) {
-      // Upward scroll
-      scrollY.value -= 120;
-      subtract();
-    }
-  }, 100);
+  if (!timeOut.value) {
+    timeOut.value = setTimeout(() => {
+      if (e.deltaY > 0 && scrollY.value <= 120 * contactsData.value.length - maxOrbitsOnscreen) {
+        // Downward scroll
+        scrollY.value += 120;
+        add();
+      } else if (e.deltaY < 0 && scrollY.value !== 0) {
+        // Upward scroll
+        scrollY.value -= 120;
+        subtract();
+      }
+      clearTimeout(timeOut.value);
+      timeOut.value = undefined;
+    }, 500); // All animations take 0.5s
+  }
 });
 
 document.addEventListener('keydown', function (event) {
