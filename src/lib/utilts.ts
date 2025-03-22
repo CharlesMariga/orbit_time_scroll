@@ -69,25 +69,26 @@ export function formatLongDateString(dateString: string) {
 }
 
 export function timeAgo(dateString: string) {
-  const now: Date = new Date();
-  const date: Date = new Date(dateString);
+  const date = new Date(dateString);
+  const now = new Date();
+  const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
-  // Calculate the difference in milliseconds
-  const diff: number = now.getTime() - date.getTime();
+  const intervals = [
+    { label: 'year', seconds: 31536000 },
+    { label: 'month', seconds: 2592000 },
+    { label: 'week', seconds: 604800 },
+    { label: 'day', seconds: 86400 },
+    { label: 'hour', seconds: 3600 },
+    { label: 'minute', seconds: 60 },
+    { label: 'second', seconds: 1 }
+  ];
 
-  // Convert milliseconds to days, hours, minutes, and seconds
-  const seconds: number = Math.floor(diff / 1000);
-  const minutes: number = Math.floor(seconds / 60);
-  const hours: number = Math.floor(minutes / 60);
-  const days: number = Math.floor(hours / 24);
-
-  if (days > 0) {
-    return `${days} days ago`;
-  } else if (hours > 0) {
-    return `${hours} hours ago`;
-  } else if (minutes > 0) {
-    return `${minutes} minutes ago`;
-  } else {
-    return `${seconds} seconds ago`;
+  for (const interval of intervals) {
+    const count = Math.floor(seconds / interval.seconds);
+    if (count >= 1) {
+      return `${count} ${interval.label}${count !== 1 ? 's' : ''} ago`;
+    }
   }
+
+  return 'just now';
 }

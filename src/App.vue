@@ -44,9 +44,10 @@ const smallestEllipseDimension = computed(() => gapBetweenEllipsis.value * 2);
 async function fetchData() {
   try {
     const res = await fetch(
-      `https://xsrr-l2ye-dpbj.f2.xano.io/api:oUvfVMO5/receive_week?start_date=${getFormattedDate()}`
+      `https://activities-fastapi.vercel.app/receive_week?start_date=${getFormattedDate()}`
     );
     const data = await res.json();
+    console.log('Data: ', data);
     contactsData.value = (data as WeekData).map((el) => ({
       array: el.array.filter(
         (obj, index, self) => index === self.findIndex((el) => el.name === obj['name'])
@@ -106,6 +107,8 @@ function isOuterOrbit(dimension: number) {
 }
 
 window.addEventListener('wheel', (e) => {
+  console.log('Event', e);
+  console.log(timeOut.value);
   if (!timeOut.value) {
     if (e.deltaY > 0 && scrollY.value <= 120 * contactsData.value.length - maxOrbitsOnscreen) {
       // Downward scroll
